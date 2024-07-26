@@ -21,9 +21,16 @@ and d.location_id = (select location_id from locations where city like 'O%');
 
 -- 5 모든 사원의 소속부서 평균연봉을 계산하여 사원별로 성과 이름(Name으로 별칭), 업무, 급여, 부
 -- 서번호, 부서 평균연봉(Department Avg Salary로 별칭)을 출력하시오
-select concat(e.first_name, ' ' , e.last_name) Name, e.job_id, e.salary, e.department_id, (select avg(salary) from employees group by department_id)'Department Avg Salary'
-from employees e join (select employee_id, avg(salary) from employees group by department_id) dept_avgsal
-on e.employee_id=dept_avgsal.employee_id;
+select concat(e.first_name, ' ' , e.last_name) Name, e.job_id, e.salary, e.department_id, dep_avg.avg_sal 'Department Avg Salary'
+from employees e 
+join (select e2.department_id, avg(salary) avg_sal from employees e2 group by department_id) dep_avg 
+on e.department_id=dep_avg.department_id
+;
+
+GRANT EXECUTE ON FUNCTION hr.dept_avg TO 'hr'@'localhost';
+FLUSH PRIVILEGES;
+
+select department_id, avg(salary) from employees group by department_id;
 
 -- 6
 select e.employee_id, concat(e.first_name, ' ' , e.last_name) Name, j.job_title, e.salary
