@@ -90,8 +90,9 @@ select book.bookname, book.price as '책 정가', book.price-orders.saleprice as
 from book, orders, customer
 where book.bookid=orders.bookid and customer.custid=orders.custid and orders.custid = 1;
 -- 7
-select distinct book.bookname as '구매하지 않은 책'
-from book 
-left join orders on book.bookid = orders.bookid
-left join customer on customer.custid=orders.custid
-where orders.custid <> 1; 
+select b.bookid, b.bookname as '구매하지 않은 책'
+from book b
+where b.bookid not in (
+select o.bookid from orders o 
+join customer c on o.custid=c.custid 
+where c.name like '박지성');
